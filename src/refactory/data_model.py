@@ -1,71 +1,38 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, List, Type, Union, Any
+from dataclasses import dataclass, field
 
 import ujson
-from dataclass_wizard import JSONWizard
+
+from ._types import ASTTree, AliasDict, RelType
+from .namespacing import Alias, AliasVal
 
 __all__ = []
 
 
-@dataclass
-class Alias:
-    alias: str
-
-
-@dataclass
-class RelPath:
-    path: str
-
-
-@dataclass
-class ASTTree:
-    pass  # Annotate recursive types TODO
-
-
-@dataclass
-class AstStatement:
-    pass  # Annotate recursive types TODO
-
-
-@dataclass
-class AstStatementKwarg:
-    pass  # Annotate recursive types TODO
-
-
-Aliases = Dict[Alias, Union[RelPath, ASTTree, List[ASTTree]]]
-RelType = Dict[RelPath, AstStatement]
-AstStatementKwargValue = Any # Temporary cop out! Annotate recursive types TODO
-ASTTree = Dict[AstStatement, Dict[AstStatementKwarg, AstStatementKwargValue]]
-
-
-@dataclass
-class Aliases:
-    aliases: Aliases
-
-
-@dataclass
+@dataclass(kw_only=True, slots=True)
 class Preconditions:
-    reltype: RelType
+    reltype: RelType = field(default=None)
 
 
-@dataclass
-class Replacement:
-    reltype: ASTTree | list[ASTTree]
+Replacement_or_s = ASTTree | list[ASTTree]
 
 
-@dataclass
-class RefactorRuleSpec(JSONWizard):
-    aliases: Aliases
+@dataclass(init=False, slots=True)
+class RefactorRuleSpec:
+    aliases: AliasDict
     preconditions: Preconditions
-    replacement: Replacement
+    replacement: Replacement_or_s = field(default_factory=dict)
 
-    class _(JSONWizard.Meta):
-        # Sets the target key transform to use for serialization;
-        # defaults to `camelCase` if not specified.
-        key_transform_with_dump = "SNAKE"
+    def __init__(self, aliases: dict, preconditions: dict, replacement: dict):
+        self.aliases = {repr(Alias(k)): AliasVal(v) for k, v in aliases.items()}
+        self.preconditions = Preconditions(**preconditions)
+        self.replacement = replacement
 
     def dump_json(self):
         # return ujson.dumps({"pages": [p.serialise() for p in self.pages]})
         return ujson.dumps({})  # TODO dump full spec
+
+    @classmethod
+    def from_dict(cls, spec: dict) -> RefactorRuleSpec:
+        return cls(**spec)

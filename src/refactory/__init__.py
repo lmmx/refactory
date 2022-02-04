@@ -1,9 +1,10 @@
 r"""
 :mod:`refactory` is a refactory utility with patterns composed of validated AST rules"""
 
+from . import patterns
 from .spec import load_spec
 
-__all__ = ["spec"]
+__all__ = ["spec", "patterns"]
 
 __author__ = "Louis Maddox"
 __license__ = "MIT"

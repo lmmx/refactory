@@ -23,6 +23,12 @@ class Alias:
     def __repr__(self):
         return f"{self._symbol}{self.idx}"
 
+    def __eq__(self, other) -> bool:
+        return isinstance(other, self.__class__) and self.idx == other.idx
+
+    def __hash__(self) -> hash:
+        return hash(tuple(sorted(vars(self).items())))
+
 
 class AliasVal:
     alias_val: str | dict | list

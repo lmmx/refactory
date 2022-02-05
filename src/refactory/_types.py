@@ -32,7 +32,7 @@ AstStatementKwarg = str
 
 AstRefTree = Union[Dict[str, str], Dict[str, Dict]]
 AliasVal = Union[str, ForwardRef("AstRefTree"), List[ForwardRef("AstRefTree")]]
-AliasDict = Dict[str, AliasVal]
+AliasDict = Dict[ForwardRef("Alias"), AliasVal]
 ValidatedAliasVal = Union[
     ForwardRef("RelPath"), ForwardRef("ASTTree"), List[ForwardRef("ASTTree")]
 ]

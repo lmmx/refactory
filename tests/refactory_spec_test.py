@@ -15,7 +15,7 @@ dict_aliasval = {ast.Name: {KwargName("id"): StringLiteral("output")}}
 @mark.parametrize("spec,n_subs", [(ReplaceAnonRetVal, 2)])
 def test_load_spec_multi_replace_with_string_literal_id(spec, n_subs, val1, val2):
     rs = load_spec(spec)
-    assert [*rs.aliases] == [repr(Alias(k)) for k in rs.aliases]
+    assert [*rs.aliases] == [Alias(f"!{a.idx}") for a in rs.aliases]
     assert [a.alias_val for a in [*rs.aliases.values()]] == [val1, val2]
 
     assert rs.preconditions.reltype  # Do something with it

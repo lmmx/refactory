@@ -24,7 +24,11 @@ class RefactorRuleSpec:
     preconditions: Preconditions
     replacement: Replacement_or_s = field(default_factory=dict)
 
-    def __init__(self, aliases: dict, preconditions: dict, replacement: dict):
+    def __init__(self,
+        aliases: dict[str,str] | dict[str,dict],
+        preconditions: dict[str,dict],
+        replacement: dict,
+    ):
         self.aliases = {Alias(k): AliasVal(v) for k, v in aliases.items()}
         self.preconditions = Preconditions(**preconditions)
         self.replacement = replacement

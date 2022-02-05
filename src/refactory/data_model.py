@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 import ujson
 
-from ._types import ASTTree, AliasDict, RelType
+from ._types import AliasDict, ASTTree, RelType
 from .namespacing import Alias, AliasVal
 
 __all__ = []

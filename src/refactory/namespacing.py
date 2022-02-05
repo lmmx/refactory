@@ -131,16 +131,14 @@ def ast_ref_tree(tree: dict, init=False):
     dereferenced_tree = {}
     for node, subnode in tree.items():
         processed_node = ast_nodify_if_in_namespace(node)
-        sub_is_kwarg = (
-            hasattr(processed_node, "mro") and ast.AST in processed_node.mro()
-        )
+        sub_is_kwarg = type(processed_node) is type and issubclass(processed_node, ast.AST)
         if not sub_is_kwarg:
             processed_node = KwargName(processed_node)
         # Recurse until reaching leaf of the AST ref tree
         if isinstance(subnode, dict):
             processed_subnode = ast_ref_tree(subnode)
             if sub_is_kwarg and any(
-                hasattr(k, "mro") and ast.AST in k.mro() for k in processed_subnode
+                type(k) is type and issubclass(k, ast.AST) for k in processed_subnode
             ):
                 raise TypeError(
                     f"Broken expectation: an AST statement {subnode=} was found "

@@ -71,9 +71,13 @@ class AstStatement(ValidatorBase):
         return hash(tuple(sorted(vars(self).items())))
 
 
-class KwargName:
+class KwargName(ValidatorBase):
     def __init__(self, kw: str):
         self.kw = kw
+
+    @classmethod
+    def validate(cls, name: str) -> str:
+        return cls(name)
 
     def __repr__(self) -> str:
         return f"{self.kw}**"

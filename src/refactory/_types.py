@@ -4,14 +4,15 @@ from typing import Any, Dict, Union
 
 from .namespacing.alias import Alias
 from .namespacing.alias_val import AliasDictVal, AliasListVal, AliasStrVal
-from .namespacing.ast_ns import AstStatement
+from .namespacing.ast_ns import AstStatement, KwargName
+from .namespacing.bounce import BouncedRef
+from .namespacing.rel import RelPath
 
 __all__ = [
     "ASTTree",
     "AstRefTree",
     "AstStatement",
-    "AstStatementKwarg",
-    "AstStatementKwargValue",
+    #"AstStatementKwarg",
     "Precondition",
     "PreconditionDict",
     "PreconditionKind",
@@ -21,14 +22,14 @@ __all__ = [
 
 AliasValTypes = Union[AliasStrVal, AliasDictVal, AliasListVal]
 
-RelPath = str
+# RelPath = str
 
 # Alias should really be a generic, so as to specify that Alias is Alias[ast.AST]
 RelType = Dict[RelPath, AstStatement | Alias]  # ``Alias[ast.AST]``
 
-AstStatement = str
-
 RelPrecondition = Dict[RelPath, AstStatement]
+
+#AstStatement = str
 
 # For now the only precondition implemented is `rel` isinstance validation
 PreconditionKind = Union[RelType]
@@ -39,8 +40,29 @@ AstStatementKwarg = str
 
 AstRefTree = Union[Dict[str, str], Dict[str, Dict]]
 
-AstStatementKwargValue = Any  # Temporary cop out! Annotate recursive types TODO
+_RecKey = Union[KwargName]#, AstStatement, Alias]
+_RecVal = Union[Alias, BouncedRef, list[Alias]]
 
-ASTTree = Dict[AstStatement, Dict[AstStatementKwarg, AstStatementKwargValue]]
-# Replacement_or_s = ASTTree | list[ASTTree]
-Replacement = ASTTree | list[ASTTree]
+#RecursiveDict = Union[_RecVal, Dict[
+#    _RecKey,
+#    _RecVal,
+#    #Union[_RecVal, Dict]
+#]]
+#RecursiveDict2x = Dict[
+#    _RecKey, # "targets" or "value"
+#    Union[str,dict]
+#]
+
+AstTreeKey = Union[AstStatement, Alias]
+#AstTreeVal = Union[
+#    RecursiveDict2x,
+#    #Alias,
+#]
+AstTreeVal = Dict[
+    Union[KwargName, str],
+    _RecVal
+]
+
+ASTTree = Dict[AstTreeKey, AstTreeVal]
+
+Replacement = list[ASTTree] #ASTTree | list[ASTTree]

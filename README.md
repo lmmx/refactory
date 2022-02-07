@@ -20,6 +20,10 @@ To load a pattern stored in the library (a "rule spec"), use the `load_spec` hel
 >>> rs = refactory.load_spec(rule_spec)
 >>> rs.aliases
 {!1: {ast⠶Name: {id**: `${output}`}}, !2: ast⠶Return}
+>>> rs.preconditions
+Preconditions(reltype={:: !2, :value: ast⠶IfExp})
+>>> rs.replacement
+[{ast⠶Assign: {targets**: [!1], value**: @1}}, {!2: {value**: !1}}]
 ```
 
 This representation of the two aliases in the `ReplaceAnonRetVal` pattern (which compiles to a
@@ -36,13 +40,8 @@ This representation of the two aliases in the `ReplaceAnonRetVal` pattern (which
 - `${output}` is a **string literal** in a pattern: that is, it represents the string `"output"`.
   The `${}` wrapped around the string is used to denote a string literal.
 
-The rest still has to be parsed and validated:
-
-- Preconditions are partly completed (`RelPath` handling is next)
-
-```py
->>> rs.preconditions
-Preconditions(reltype={'': !2, 'value': ast⠶IfExp})
->>> rs.replacement
-[{'ast.Assign': {'targets': ['!1'], 'value': '@1'}}, {'!2': {'value': '!1'}}]
-```
+In the initial implementation (i.e. subject to change),
+replacement ASTs can be given to a depth of a single AST statement,
+with anything deeper represented by aliases.
+Aliases may not contain other aliases (again, in the initial implementation),
+limiting the depth of replacement a `RefactorRuleSpec` can specify to 2 AST nodes deep.

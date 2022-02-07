@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import ujson
 from pydantic import BaseModel
-from pydantic.dataclasses import Field, dataclass
+from pydantic.dataclasses import dataclass#, Field
 
 from ._types import AliasValTypes, RelType, Replacement
 from .namespacing import Alias, AliasVal
@@ -18,7 +18,7 @@ class Preconditions:
 class RefactorRuleSpec(BaseModel):
     aliases: dict[Alias, AliasValTypes]
     preconditions: Preconditions
-    replacement: Replacement = Field(default_factory=dict)
+    replacement: Replacement# = Field(default_factory=dict)
 
     class Config:
         arbitrary_types_allowed = True
@@ -30,3 +30,5 @@ class RefactorRuleSpec(BaseModel):
     @classmethod
     def from_dict(cls, spec: dict) -> RefactorRuleSpec:
         return cls(**spec)
+
+RefactorRuleSpec.update_forward_refs()

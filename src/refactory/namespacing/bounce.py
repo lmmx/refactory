@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from .sym_counter import SymbolCounter
 
-__all__ = ["Alias"]
+__all__ = ["BouncedRef"]
 
 
-class Alias(SymbolCounter):
-    _symbol = "!"
+class BouncedRef(SymbolCounter):
+    _symbol = "@"

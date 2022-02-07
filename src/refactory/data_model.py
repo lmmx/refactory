@@ -1,37 +1,28 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
 import ujson
+from pydantic import BaseModel
+from pydantic.dataclasses import Field, dataclass
 
-from ._types import AliasDict, ASTTree, RelType
+from ._types import AliasValTypes, RelType, Replacement
 from .namespacing import Alias, AliasVal
 
 __all__ = []
 
 
-@dataclass(kw_only=True, slots=True)
+@dataclass  # (kw_only=True, slots=True)
 class Preconditions:
-    reltype: RelType = field(default=None)
+    reltype: RelType  # = Field(default=None)
+    # reltype: dict[str,str]
 
 
-Replacement_or_s = ASTTree | list[ASTTree]
-
-
-@dataclass(init=False, slots=True)
-class RefactorRuleSpec:
-    aliases: AliasDict
+class RefactorRuleSpec(BaseModel):
+    aliases: dict[Alias, AliasValTypes]
     preconditions: Preconditions
-    replacement: Replacement_or_s = field(default_factory=dict)
+    replacement: Replacement = Field(default_factory=dict)
 
-    def __init__(self,
-        aliases: dict[str,str] | dict[str,dict],
-        preconditions: dict[str,dict],
-        replacement: dict,
-    ):
-        self.aliases = {Alias(k): AliasVal(v) for k, v in aliases.items()}
-        self.preconditions = Preconditions(**preconditions)
-        self.replacement = replacement
+    class Config:
+        arbitrary_types_allowed = True
 
     def dump_json(self):
         # return ujson.dumps({"pages": [p.serialise() for p in self.pages]})

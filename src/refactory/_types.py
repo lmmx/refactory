@@ -1,9 +1,13 @@
-from typing import Any, Dict, ForwardRef, List, Union
+from __future__ import annotations
+
+from typing import Any, Dict, Union
+
+from .namespacing.alias import Alias
+from .namespacing.alias_val import AliasDictVal, AliasListVal, AliasStrVal
+from .namespacing.ast_ns import AstStatement
 
 __all__ = [
     "ASTTree",
-    "AliasDict",
-    "AliasVal",
     "AstRefTree",
     "AstStatement",
     "AstStatementKwarg",
@@ -13,15 +17,18 @@ __all__ = [
     "PreconditionKind",
     "RelPrecondition",
     "RelType",
-    "ValidatedAliasDict",
-    "ValidatedAliasVal",
 ]
 
-RelType = str
+AliasValTypes = Union[AliasStrVal, AliasDictVal, AliasListVal]
+
+RelPath = str
+
+# Alias should really be a generic, so as to specify that Alias is Alias[ast.AST]
+RelType = Dict[RelPath, AstStatement | Alias]  # ``Alias[ast.AST]``
 
 AstStatement = str
 
-RelPrecondition = Dict[ForwardRef("RelPath"), AstStatement]
+RelPrecondition = Dict[RelPath, AstStatement]
 
 # For now the only precondition implemented is `rel` isinstance validation
 PreconditionKind = Union[RelType]
@@ -31,13 +38,9 @@ PreconditionDict = Dict[PreconditionKind, Precondition]
 AstStatementKwarg = str
 
 AstRefTree = Union[Dict[str, str], Dict[str, Dict]]
-AliasVal = Union[str, ForwardRef("AstRefTree"), List[ForwardRef("AstRefTree")]]
-AliasDict = Dict[ForwardRef("Alias"), AliasVal]
-ValidatedAliasVal = Union[
-    ForwardRef("RelPath"), ForwardRef("ASTTree"), List[ForwardRef("ASTTree")]
-]
-ValidatedAliasDict = Dict[ForwardRef("Alias"), ForwardRef("ValidatedAliasVal")]
 
 AstStatementKwargValue = Any  # Temporary cop out! Annotate recursive types TODO
-# ASTTree = Union[Dict[str, str], Dict[str, ForwardRef("ASTTree")]]
+
 ASTTree = Dict[AstStatement, Dict[AstStatementKwarg, AstStatementKwargValue]]
+# Replacement_or_s = ASTTree | list[ASTTree]
+Replacement = ASTTree | list[ASTTree]

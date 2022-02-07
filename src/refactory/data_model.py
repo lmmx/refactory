@@ -13,7 +13,6 @@ __all__ = []
 @dataclass  # (kw_only=True, slots=True)
 class Preconditions:
     reltype: RelType  # = Field(default=None)
-    # reltype: dict[str,str]
 
 
 class RefactorRuleSpec(BaseModel):

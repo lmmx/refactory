@@ -11,7 +11,7 @@ __all__ = ["ast_ref_tree"]
 def ast_ref_tree(tree: dict, init=False) -> dict:
     """
     An AST tree starting at an AST node (without aliases), built from a dict
-    in which the AST statement nodes are strings (hence the name 'ref' tree).
+    in which the :class:`AstStatement` nodes are strings (hence the name 'ref' tree).
     Note that a single atomic node, built from a string, is not a tree.
 
     Codifying some logic here: an AST ref tree must be init'ed at an AST node (not a
